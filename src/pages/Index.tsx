@@ -125,12 +125,11 @@ const Index = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3">
-            <Select value={selectedArea || ""} onValueChange={(value) => setSelectedArea(value || null)}>
+            <Select value={selectedArea || undefined} onValueChange={(value) => setSelectedArea(value || null)}>
               <SelectTrigger className="w-full sm:w-64">
                 <SelectValue placeholder="All Areas" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Areas</SelectItem>
                 {areas.map((area) => (
                   <SelectItem key={area.id} value={area.id}>
                     {area.name}, {area.district}
