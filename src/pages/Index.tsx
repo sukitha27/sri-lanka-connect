@@ -111,7 +111,14 @@ const Index = () => {
       <OfflineIndicator />
       
       {/* Quick Access Grid */}
-      <QuickHelpGrid />
+<QuickHelpGrid
+  {...({
+    onRequestHelp: (prefillData: any) => {
+      setRequestFormOpen(true);
+      // The prefillData will be automatically used by the form
+    },
+  } as any)}
+/>
       
       {/* Critical Information */}
       <CriticalInfo />
