@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import EmergencyMap from "./pages/EmergencyMap";
 import NotFound from "./pages/NotFound";
 import { AppShell } from "@/components/layout/AppShell";
 
@@ -36,6 +37,7 @@ const App = () => (
               <Admin />
             </WithLayout>
           } />
+          <Route path="/map" element={<EmergencyMap />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
