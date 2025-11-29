@@ -84,40 +84,109 @@ export type Database = {
       }
       help_requests: {
         Row: {
+          action_notes: string | null
+          action_taken: boolean | null
+          action_taken_at: string | null
+          alternate_phone: string | null
           area_id: string
+          building_type: string | null
           contact_info: string
           created_at: string
           description: string
+          emergency_type: string | null
+          floor_level: string | null
+          gps_latitude: number | null
+          gps_longitude: number | null
+          has_children: boolean | null
+          has_disabled: boolean | null
+          has_elderly: boolean | null
+          has_medical_needs: boolean | null
           id: string
+          is_verified: boolean | null
+          landmark: string | null
           location_details: string | null
+          needs_food: boolean | null
+          needs_power: boolean | null
+          needs_water: boolean | null
+          number_of_people: number | null
+          phone_battery_percent: number | null
+          safe_for_hours: number | null
           status: Database["public"]["Enums"]["request_status"]
           title: string
           updated_at: string
           user_id: string
+          verified_at: string | null
+          water_level: string | null
         }
         Insert: {
+          action_notes?: string | null
+          action_taken?: boolean | null
+          action_taken_at?: string | null
+          alternate_phone?: string | null
           area_id: string
+          building_type?: string | null
           contact_info: string
           created_at?: string
           description: string
+          emergency_type?: string | null
+          floor_level?: string | null
+          gps_latitude?: number | null
+          gps_longitude?: number | null
+          has_children?: boolean | null
+          has_disabled?: boolean | null
+          has_elderly?: boolean | null
+          has_medical_needs?: boolean | null
           id?: string
+          is_verified?: boolean | null
+          landmark?: string | null
           location_details?: string | null
+          needs_food?: boolean | null
+          needs_power?: boolean | null
+          needs_water?: boolean | null
+          number_of_people?: number | null
+          phone_battery_percent?: number | null
+          safe_for_hours?: number | null
           status?: Database["public"]["Enums"]["request_status"]
           title: string
           updated_at?: string
           user_id: string
+          verified_at?: string | null
+          water_level?: string | null
         }
         Update: {
+          action_notes?: string | null
+          action_taken?: boolean | null
+          action_taken_at?: string | null
+          alternate_phone?: string | null
           area_id?: string
+          building_type?: string | null
           contact_info?: string
           created_at?: string
           description?: string
+          emergency_type?: string | null
+          floor_level?: string | null
+          gps_latitude?: number | null
+          gps_longitude?: number | null
+          has_children?: boolean | null
+          has_disabled?: boolean | null
+          has_elderly?: boolean | null
+          has_medical_needs?: boolean | null
           id?: string
+          is_verified?: boolean | null
+          landmark?: string | null
           location_details?: string | null
+          needs_food?: boolean | null
+          needs_power?: boolean | null
+          needs_water?: boolean | null
+          number_of_people?: number | null
+          phone_battery_percent?: number | null
+          safe_for_hours?: number | null
           status?: Database["public"]["Enums"]["request_status"]
           title?: string
           updated_at?: string
           user_id?: string
+          verified_at?: string | null
+          water_level?: string | null
         }
         Relationships: [
           {
