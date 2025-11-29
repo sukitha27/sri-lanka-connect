@@ -7,13 +7,13 @@ import { AlertFeed } from "@/components/AlertFeed";
 import { HelpLists } from "@/components/HelpLists";
 import { HelpRequestForm } from "@/components/HelpRequestForm";
 import { HelpOfferForm } from "@/components/HelpOfferForm";
-import { EmergencyAlertBanner } from "@/components/EmergencyAlertBanner";
+import { EmergencyHeader } from "@/components/EmergencyHeader";
 import { QuickHelpGrid } from "@/components/QuickHelpGrid";
 import { CriticalInfo } from "@/components/CriticalInfo";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
 import { SOSButton } from "@/components/SOSButton";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
-import { CloudRain, LogOut, Plus, HandHeart, Shield, Menu } from "lucide-react";
+import { CloudRain, LogOut, Plus, HandHeart, Shield, Menu, Map } from "lucide-react";
 import { Session } from "@supabase/supabase-js";
 import {
   DropdownMenu,
@@ -105,10 +105,11 @@ const Index = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       {/* Emergency Components */}
-      <EmergencyAlertBanner />
-      <OfflineIndicator />
+      <EmergencyHeader />
+      <div className="px-4">
+        <OfflineIndicator />
       
       {/* Quick Access Grid */}
 <QuickHelpGrid
@@ -161,6 +162,15 @@ const Index = () => {
               <HandHeart className="w-4 h-4" />
               Offer Help
             </Button>
+            <Button 
+              onClick={() => navigate("/map")}
+              variant="outline"
+              className="hidden md:flex gap-2"
+              size="sm"
+            >
+              <Map className="w-4 h-4" />
+              View Map
+            </Button>
             
             {/* Mobile Menu */}
             <DropdownMenu>
@@ -170,6 +180,10 @@ const Index = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => navigate("/map")}>
+                  <Map className="w-4 h-4 mr-2" />
+                  View Map
+                </DropdownMenuItem>
                 {isAdmin && (
                   <DropdownMenuItem onClick={() => navigate("/admin")}>
                     <Shield className="w-4 h-4 mr-2" />
@@ -272,6 +286,7 @@ const Index = () => {
         onOfferHelp={() => setOfferFormOpen(true)}
       />
       <SOSButton />
+      </div>
     </div>
   );
 };
