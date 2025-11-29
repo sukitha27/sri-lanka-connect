@@ -49,7 +49,7 @@ export const EmergencyHeader = () => {
             <Button 
               variant="secondary" 
               size="sm"
-              onClick={() => {}}
+              onClick={() => navigate('/map')}
               className="gap-2 bg-purple-600 hover:bg-purple-700 text-white"
             >
               <Map className="w-4 h-4" />
@@ -91,7 +91,7 @@ export const EmergencyHeader = () => {
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Verified
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/map')}>
                 <Map className="w-4 h-4 mr-2" />
                 Map
               </DropdownMenuItem>

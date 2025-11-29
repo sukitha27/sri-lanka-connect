@@ -13,7 +13,7 @@ import { CriticalInfo } from "@/components/CriticalInfo";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
 import { SOSButton } from "@/components/SOSButton";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
-import { CloudRain, LogOut, Plus, HandHeart, Shield, Menu } from "lucide-react";
+import { CloudRain, LogOut, Plus, HandHeart, Shield, Menu, Map } from "lucide-react";
 import { Session } from "@supabase/supabase-js";
 import {
   DropdownMenu,
@@ -162,6 +162,15 @@ const Index = () => {
               <HandHeart className="w-4 h-4" />
               Offer Help
             </Button>
+            <Button 
+              onClick={() => navigate("/map")}
+              variant="outline"
+              className="hidden md:flex gap-2"
+              size="sm"
+            >
+              <Map className="w-4 h-4" />
+              View Map
+            </Button>
             
             {/* Mobile Menu */}
             <DropdownMenu>
@@ -171,6 +180,10 @@ const Index = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => navigate("/map")}>
+                  <Map className="w-4 h-4 mr-2" />
+                  View Map
+                </DropdownMenuItem>
                 {isAdmin && (
                   <DropdownMenuItem onClick={() => navigate("/admin")}>
                     <Shield className="w-4 h-4 mr-2" />
