@@ -26,6 +26,21 @@ interface HelpRequest {
   created_at: string;
   areas: { name: string; district: string };
   user_id?: string;
+  emergency_type?: string;
+  number_of_people?: number;
+  has_children?: boolean;
+  has_elderly?: boolean;
+  has_disabled?: boolean;
+  has_medical_needs?: boolean;
+  water_level?: string;
+  needs_food?: boolean;
+  needs_water?: boolean;
+  needs_power?: boolean;
+  is_verified?: boolean;
+  gps_latitude?: number;
+  gps_longitude?: number;
+  landmark?: string;
+  phone_battery_percent?: number;
 }
 
 interface HelpOffer {
@@ -269,9 +284,23 @@ export const HelpLists = ({ selectedArea }: { selectedArea: string | null }) => 
             ) : (
               filteredRequests.map((request) => (
                 <Card key={request.id} className="hover:shadow-md transition-shadow group">
-                  <CardHeader className="pb-3">
+                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-lg flex-1">{request.title}</CardTitle>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <CardTitle className="text-lg">{request.title}</CardTitle>
+                          {request.is_verified && (
+                            <Badge className="bg-blue-600 text-white">
+                              ✓ Verified
+                            </Badge>
+                          )}
+                        </div>
+                        {request.emergency_type && (
+                          <Badge variant="outline" className="text-xs">
+                            {request.emergency_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                          </Badge>
+                        )}
+                      </div>
                       <div className="flex items-center gap-2">
                         <Badge className={getStatusColor(request.status)}>
                           {request.status.replace('_', ' ')}
@@ -305,6 +334,57 @@ export const HelpLists = ({ selectedArea }: { selectedArea: string | null }) => 
                   <CardContent className="space-y-3">
                     <p className="text-sm text-foreground/80">{request.description}</p>
                     
+                    {/* Emergency Details */}
+                    {(request.number_of_people || request.water_level || request.has_children || request.has_elderly || request.has_disabled || request.has_medical_needs) && (
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-3 space-y-2">
+                        {request.number_of_people && (
+                          <div className="text-sm">
+                            <span className="font-semibold">👥 {request.number_of_people} people</span>
+                            {(request.has_children || request.has_elderly || request.has_disabled || request.has_medical_needs) && (
+                              <span className="text-muted-foreground ml-2">
+                                ({[
+                                  request.has_children && 'Children',
+                                  request.has_elderly && 'Elderly',
+                                  request.has_disabled && 'Disabled',
+                                  request.has_medical_needs && 'Medical needs'
+                                ].filter(Boolean).join(', ')})
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        {request.water_level && (
+                          <div className="text-sm">
+                            <span className="font-semibold">🌊 Water Level:</span>
+                            <span className="ml-2 text-red-700">{request.water_level.replace(/_/g, ' ').toUpperCase()}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Resource Needs */}
+                    {(request.needs_food || request.needs_water || request.needs_power) && (
+                      <div className="flex gap-2 flex-wrap">
+                        {request.needs_food && <Badge variant="outline">🍽️ Needs Food</Badge>}
+                        {request.needs_water && <Badge variant="outline">💧 Needs Water</Badge>}
+                        {request.needs_power && <Badge variant="outline">🔋 Needs Power</Badge>}
+                      </div>
+                    )}
+
+                    {/* Location */}
+                    {(request.gps_latitude && request.gps_longitude) && (
+                      <div className="flex gap-2 text-sm text-muted-foreground">
+                        <MapPin className="w-4 h-4 shrink-0 mt-0.5 text-green-600" />
+                        <a 
+                          href={`https://www.google.com/maps?q=${request.gps_latitude},${request.gps_longitude}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          📍 View on Map ({request.gps_latitude.toFixed(6)}, {request.gps_longitude.toFixed(6)})
+                        </a>
+                      </div>
+                    )}
+                    
                     {request.location_details && (
                       <div className="flex gap-2 text-sm text-muted-foreground">
                         <MapPin className="w-4 h-4 shrink-0 mt-0.5" />
@@ -312,10 +392,24 @@ export const HelpLists = ({ selectedArea }: { selectedArea: string | null }) => 
                       </div>
                     )}
 
+                    {request.landmark && (
+                      <div className="text-sm text-muted-foreground">
+                        🏛️ Landmark: {request.landmark}
+                      </div>
+                    )}
+
+                    {/* Contact */}
                     <div className="flex gap-2 text-sm text-foreground">
                       <Phone className="w-4 h-4 shrink-0 mt-0.5 text-primary" />
                       <span className="font-medium">{request.contact_info}</span>
                     </div>
+
+                    {/* Battery warning */}
+                    {request.phone_battery_percent && request.phone_battery_percent < 20 && (
+                      <div className="text-xs text-amber-700 bg-amber-50 px-2 py-1 rounded">
+                        ⚠️ Low battery: {request.phone_battery_percent}%
+                      </div>
+                    )}
 
                     <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
                       <span>{request.areas.name}, {request.areas.district}</span>

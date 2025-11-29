@@ -7,7 +7,7 @@ import { AlertFeed } from "@/components/AlertFeed";
 import { HelpLists } from "@/components/HelpLists";
 import { HelpRequestForm } from "@/components/HelpRequestForm";
 import { HelpOfferForm } from "@/components/HelpOfferForm";
-import { EmergencyAlertBanner } from "@/components/EmergencyAlertBanner";
+import { EmergencyHeader } from "@/components/EmergencyHeader";
 import { QuickHelpGrid } from "@/components/QuickHelpGrid";
 import { CriticalInfo } from "@/components/CriticalInfo";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
@@ -105,10 +105,11 @@ const Index = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       {/* Emergency Components */}
-      <EmergencyAlertBanner />
-      <OfflineIndicator />
+      <EmergencyHeader />
+      <div className="px-4">
+        <OfflineIndicator />
       
       {/* Quick Access Grid */}
 <QuickHelpGrid
@@ -272,6 +273,7 @@ const Index = () => {
         onOfferHelp={() => setOfferFormOpen(true)}
       />
       <SOSButton />
+      </div>
     </div>
   );
 };
