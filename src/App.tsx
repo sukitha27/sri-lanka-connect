@@ -8,6 +8,10 @@ import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import EmergencyMap from "./pages/EmergencyMap";
 import MissingPersons from "./pages/MissingPersons";
+import AllRequests from "./pages/AllRequests";
+import VerifiedRequests from "./pages/VerifiedRequests";
+import ActionsTaken from "./pages/ActionsTaken";
+import EmergencyContacts from "./pages/EmergencyContacts";
 import NotFound from "./pages/NotFound";
 import { AppShell } from "@/components/layout/AppShell";
 
@@ -46,6 +50,10 @@ const App = () => (
           />
           <Route path="/map" element={<EmergencyMap />} />
           <Route path="/missing-persons" element={<MissingPersons />} />
+          <Route path="/all-requests" element={<AllRequests />} />
+          <Route path="/verified" element={<VerifiedRequests />} />
+          <Route path="/actions-taken" element={<ActionsTaken />} />
+          <Route path="/emergency-contacts" element={<EmergencyContacts />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
