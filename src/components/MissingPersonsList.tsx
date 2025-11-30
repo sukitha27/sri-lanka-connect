@@ -92,7 +92,7 @@ export const MissingPersonsList = ({ selectedArea }: { selectedArea?: string }) 
       const { data, error } = await query;
 
       if (error) throw error;
-      setMissingPersons(data || []);
+      setMissingPersons((data as MissingPerson[]) || []);
     } catch (error) {
       console.error("Error fetching missing persons:", error);
       toast.error("Failed to load missing persons");
