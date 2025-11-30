@@ -31,7 +31,7 @@ export const EmergencyHeader = () => {
             <Button 
               variant="secondary" 
               size="sm"
-              onClick={() => {}}
+              onClick={() => navigate('/all-requests')}
               className="gap-2"
             >
               <FileText className="w-4 h-4" />
@@ -40,7 +40,7 @@ export const EmergencyHeader = () => {
             <Button 
               variant="secondary" 
               size="sm"
-              onClick={() => {}}
+              onClick={() => navigate('/verified')}
               className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
             >
               <CheckCircle className="w-4 h-4" />
@@ -58,7 +58,7 @@ export const EmergencyHeader = () => {
             <Button 
               variant="secondary" 
               size="sm"
-              onClick={() => {}}
+              onClick={() => navigate('/actions-taken')}
               className="gap-2 bg-orange-600 hover:bg-orange-700 text-white"
             >
               <CheckCircle className="w-4 h-4" />
@@ -67,7 +67,7 @@ export const EmergencyHeader = () => {
             <Button 
               variant="secondary" 
               size="sm"
-              onClick={() => {}}
+              onClick={() => navigate('/emergency-contacts')}
               className="gap-2 bg-yellow-600 hover:bg-yellow-700 text-white"
             >
               <Phone className="w-4 h-4" />
@@ -83,11 +83,11 @@ export const EmergencyHeader = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/all-requests')}>
                 <FileText className="w-4 h-4 mr-2" />
                 View All
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/verified')}>
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Verified
               </DropdownMenuItem>
@@ -95,11 +95,11 @@ export const EmergencyHeader = () => {
                 <Map className="w-4 h-4 mr-2" />
                 Map
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/actions-taken')}>
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Actions Taken
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/emergency-contacts')}>
                 <Phone className="w-4 h-4 mr-2" />
                 Emergency Contacts
               </DropdownMenuItem>
@@ -111,7 +111,7 @@ export const EmergencyHeader = () => {
         <div className="px-4 pb-4 space-y-2">
           <Button 
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-            onClick={() => {}}
+            onClick={() => navigate('/')}
           >
             🏠 Offer Help, Find Relief Camps & Shelters
           </Button>
