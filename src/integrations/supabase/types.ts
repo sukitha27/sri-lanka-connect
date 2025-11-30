@@ -198,6 +198,75 @@ export type Database = {
           },
         ]
       }
+      missing_persons: {
+        Row: {
+          age: number | null
+          area_id: string
+          clothing_description: string | null
+          contact_info: string
+          created_at: string
+          description: string
+          found_at: string | null
+          full_name: string
+          gender: string | null
+          gps_latitude: number | null
+          gps_longitude: number | null
+          id: string
+          is_found: boolean
+          last_seen_date: string | null
+          last_seen_location: string | null
+          photo_url: string | null
+          physical_description: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age?: number | null
+          area_id: string
+          clothing_description?: string | null
+          contact_info: string
+          created_at?: string
+          description: string
+          found_at?: string | null
+          full_name: string
+          gender?: string | null
+          gps_latitude?: number | null
+          gps_longitude?: number | null
+          id?: string
+          is_found?: boolean
+          last_seen_date?: string | null
+          last_seen_location?: string | null
+          photo_url?: string | null
+          physical_description?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age?: number | null
+          area_id?: string
+          clothing_description?: string | null
+          contact_info?: string
+          created_at?: string
+          description?: string
+          found_at?: string | null
+          full_name?: string
+          gender?: string | null
+          gps_latitude?: number | null
+          gps_longitude?: number | null
+          id?: string
+          is_found?: boolean
+          last_seen_date?: string | null
+          last_seen_location?: string | null
+          photo_url?: string | null
+          physical_description?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           area_id: string | null

@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import EmergencyMap from "./pages/EmergencyMap";
+import MissingPersons from "./pages/MissingPersons";
 import NotFound from "./pages/NotFound";
 import { AppShell } from "@/components/layout/AppShell";
 
