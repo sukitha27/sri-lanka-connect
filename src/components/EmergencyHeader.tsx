@@ -117,9 +117,15 @@ export const EmergencyHeader = () => {
           </Button>
           <Button 
             className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold"
-            onClick={() => {}}
+            onClick={() => navigate('/map')}
           >
             📍 Real-time Flood Map
+          </Button>
+          <Button
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
+            onClick={() => navigate('/missing-persons')}
+          >
+            🧑‍🤝‍🧑 Report or View Missing Persons
           </Button>
         </div>
       </div>

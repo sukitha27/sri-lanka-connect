@@ -27,18 +27,25 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={
-            <WithLayout>
-              <Index />
-            </WithLayout>
-          } />
+          <Route
+            path="/"
+            element={
+              <WithLayout>
+                <Index />
+              </WithLayout>
+            }
+          />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/admin" element={
-            <WithLayout>
-              <Admin />
-            </WithLayout>
-          } />
+          <Route
+            path="/admin"
+            element={
+              <WithLayout>
+                <Admin />
+              </WithLayout>
+            }
+          />
           <Route path="/map" element={<EmergencyMap />} />
+          <Route path="/missing-persons" element={<MissingPersons />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
