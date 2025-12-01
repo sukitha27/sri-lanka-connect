@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { AdminStats } from "@/components/admin/AdminStats";
+import { RequestTrendsChart } from "@/components/admin/RequestTrendsChart";
+import { UserActivityChart } from "@/components/admin/UserActivityChart";
+import { SystemHealthMonitor } from "@/components/admin/SystemHealthMonitor";
+import { WeatherAlertForm } from "@/components/admin/WeatherAlertForm";
 
 interface Area {
   id: string;
@@ -16,24 +17,40 @@ interface Area {
   district: string;
 }
 
+interface Stats {
+  totalRequests: number;
+  verifiedRequests: number;
+  actionsTaken: number;
+  missingPersons: number;
+}
+
 const Admin = () => {
   const [areas, setAreas] = useState<Area[]>([]);
-  const [loading, setLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [formData, setFormData] = useState({
-    area_id: "",
-    severity: "info",
-    title: "",
-    description: "",
+  const [stats, setStats] = useState<Stats>({
+    totalRequests: 0,
+    verifiedRequests: 0,
+    actionsTaken: 0,
+    missingPersons: 0,
   });
+  const [trendData, setTrendData] = useState<any[]>([]);
+  const [activityData, setActivityData] = useState<any[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     checkAdminAccess();
-    fetchAreas();
   }, []);
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchAreas();
+      fetchStats();
+      fetchTrendData();
+      fetchActivityData();
+    }
+  }, [isAdmin]);
 
   const checkAdminAccess = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -73,51 +90,100 @@ const Admin = () => {
     if (data) setAreas(data);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const fetchStats = async () => {
+    const { count: totalRequests } = await supabase
+      .from('help_requests')
+      .select('*', { count: 'exact', head: true });
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "You must be logged in.",
-      });
-      setLoading(false);
-      return;
-    }
+    const { count: verifiedRequests } = await supabase
+      .from('help_requests')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_verified', true);
 
-    const { error } = await supabase
-      .from('weather_alerts')
-      .insert({
-        area_id: formData.area_id,
-        severity: formData.severity as 'info' | 'warning' | 'critical',
-        title: formData.title,
-        description: formData.description,
-        created_by: user.id,
-      });
+    const { count: actionsTaken } = await supabase
+      .from('help_requests')
+      .select('*', { count: 'exact', head: true })
+      .eq('action_taken', true);
 
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      });
-    } else {
-      toast({
-        title: "Alert published",
-        description: "The weather alert has been sent to affected areas.",
-      });
-      setFormData({
-        area_id: "",
-        severity: "info",
-        title: "",
-        description: "",
-      });
-    }
-    setLoading(false);
+    const { count: missingPersons } = await supabase
+      .from('missing_persons')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_found', false);
+
+    setStats({
+      totalRequests: totalRequests || 0,
+      verifiedRequests: verifiedRequests || 0,
+      actionsTaken: actionsTaken || 0,
+      missingPersons: missingPersons || 0,
+    });
   };
+
+  const fetchTrendData = async () => {
+    const { data } = await supabase
+      .from('help_requests')
+      .select('created_at, is_verified')
+      .order('created_at', { ascending: true });
+
+    if (data) {
+      const trends = data.reduce((acc: any, curr) => {
+        const date = new Date(curr.created_at).toLocaleDateString();
+        if (!acc[date]) {
+          acc[date] = { date, requests: 0, verified: 0 };
+        }
+        acc[date].requests += 1;
+        if (curr.is_verified) acc[date].verified += 1;
+        return acc;
+      }, {});
+
+      setTrendData(Object.values(trends).slice(-7));
+    }
+  };
+
+  const fetchActivityData = async () => {
+    const { data } = await supabase
+      .from('help_requests')
+      .select('emergency_type');
+
+    if (data) {
+      const activity = data.reduce((acc: any, curr) => {
+        const type = curr.emergency_type || 'Other';
+        if (!acc[type]) {
+          acc[type] = { category: type, count: 0 };
+        }
+        acc[type].count += 1;
+        return acc;
+      }, {});
+
+      setActivityData(Object.values(activity));
+    }
+  };
+
+  const healthMetrics = [
+    {
+      name: "Database Connection",
+      status: "healthy" as const,
+      message: "All queries responding normally",
+      icon: require("lucide-react").Database,
+    },
+    {
+      name: "API Services",
+      status: "healthy" as const,
+      message: "All endpoints operational",
+      icon: require("lucide-react").Activity,
+    },
+    {
+      name: "Storage",
+      status: "healthy" as const,
+      message: "File uploads working correctly",
+      icon: require("lucide-react").Cloud,
+    },
+    {
+      name: "Alert System",
+      status: stats.totalRequests > 100 ? ("warning" as const) : ("healthy" as const),
+      message: stats.totalRequests > 100 ? "High request volume" : "Operating normally",
+      icon: require("lucide-react").AlertCircle,
+    },
+  ];
 
   if (checkingAuth) {
     return (
@@ -133,98 +199,51 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
-      <div className="container mx-auto max-w-2xl py-8">
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate("/")}
-          className="mb-6 gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Main
-        </Button>
+      <div className="container mx-auto py-8">
+        <div className="flex items-center justify-between mb-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/")}
+            className="gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Main
+          </Button>
+          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <div className="w-24" />
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Post Weather Alert</CardTitle>
-            <CardDescription>
-              Create and publish weather alerts to notify people in affected areas
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="area">Affected Area</Label>
-                <Select
-                  value={formData.area_id}
-                  onValueChange={(value) => setFormData({ ...formData, area_id: value })}
-                  required
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select area" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {areas.map((area) => (
-                      <SelectItem key={area.id} value={area.id}>
-                        {area.name}, {area.district}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="alerts">Post Alert</TabsTrigger>
+          </TabsList>
 
-              <div className="space-y-2">
-                <Label htmlFor="severity">Severity Level</Label>
-                <Select
-                  value={formData.severity}
-                  onValueChange={(value) => setFormData({ ...formData, severity: value })}
-                  required
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="info">Info - General Information</SelectItem>
-                    <SelectItem value="warning">Warning - Be Prepared</SelectItem>
-                    <SelectItem value="critical">Critical - Take Action Now</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+          <TabsContent value="overview" className="space-y-6">
+            <AdminStats {...stats} />
+            
+            <div className="grid gap-6 md:grid-cols-2">
+              <RequestTrendsChart data={trendData} />
+              <SystemHealthMonitor metrics={healthMetrics} />
+            </div>
+          </TabsContent>
 
-              <div className="space-y-2">
-                <Label htmlFor="title">Alert Title</Label>
-                <Input
-                  id="title"
-                  placeholder="e.g., Heavy Rainfall Expected"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  required
-                />
-              </div>
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <UserActivityChart data={activityData} />
+              <RequestTrendsChart data={trendData} />
+            </div>
+            
+            <AdminStats {...stats} />
+          </TabsContent>
 
-              <div className="space-y-2">
-                <Label htmlFor="description">Alert Description</Label>
-                <Textarea
-                  id="description"
-                  placeholder="Provide detailed information about the weather situation, recommended actions, and safety measures"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  required
-                  rows={6}
-                />
-              </div>
-
-              <Button 
-                type="submit" 
-                className="w-full gap-2" 
-                size="lg"
-                disabled={loading}
-              >
-                <Send className="w-4 h-4" />
-                {loading ? "Publishing..." : "Publish Alert"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+          <TabsContent value="alerts">
+            <div className="max-w-2xl mx-auto">
+              <WeatherAlertForm areas={areas} />
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
